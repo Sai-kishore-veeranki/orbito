@@ -1,6 +1,5 @@
 package com.vsk.orbito.security;
 
-
 import com.vsk.orbito.entity.User;
 import com.vsk.orbito.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +16,35 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "User not found with email: " + email));
 
+        // OAuth2 users have no password — use empty string
+        String password = user.getPassword() != null
+                ? user.getPassword()
+                : "";
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
-                user.getPassword(),
+                password,
                 user.isActive(),
                 true, true, true,
-                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                List.of(new SimpleGrantedAuthority(
+                        "ROLE_" + user.getRole().name()))
         );
     }
 }
+//```
+//
+//        ---
+//
+//        ## Step 9 — Run and test
+//
+//**1.** Run `OrbitoApplication` — watch console, should start with no errors.
+//
+//        **2.** Open this URL directly in your browser:
+//        ```
+//http://localhost:8080/oauth2/authorization/google

@@ -1,6 +1,7 @@
 package com.vsk.orbito.entity;
 
 import com.vsk.orbito.enums.Role;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,8 +28,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT NULL")
+    private String password;          // nullable for OAuth2 users
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -41,6 +42,15 @@ public class User {
     private int failedLoginAttempts = 0;
 
     private LocalDateTime lockedUntil;
+
+    @Column(unique = true)
+    private String googleId;
+
+    @Column
+    private String profilePicture;
+
+    @Column(nullable = false)
+    private String provider = "LOCAL";  // LOCAL or GOOGLE
 
     @CreationTimestamp
     @Column(updatable = false)
