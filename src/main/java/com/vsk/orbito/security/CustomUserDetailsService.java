@@ -1,6 +1,5 @@
 package com.vsk.orbito.security;
 
-import com.vsk.orbito.entity.User;
 import com.vsk.orbito.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
