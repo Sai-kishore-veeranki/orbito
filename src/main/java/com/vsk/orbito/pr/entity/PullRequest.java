@@ -1,5 +1,6 @@
 package com.vsk.orbito.pr.entity;
 
+import com.vsk.orbito.entity.User;
 import com.vsk.orbito.pr.enums.PRStatus;
 import com.vsk.orbito.project.entity.Project;
 import com.vsk.orbito.task.entity.Task;

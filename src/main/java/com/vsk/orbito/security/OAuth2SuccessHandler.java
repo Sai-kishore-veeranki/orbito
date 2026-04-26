@@ -3,6 +3,7 @@ package com.vsk.orbito.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vsk.orbito.dto.response.ApiResponse;
 import com.vsk.orbito.dto.response.AuthResponse;
+import com.vsk.orbito.entity.User;
 import com.vsk.orbito.exception.ResourceNotFoundException;
 import com.vsk.orbito.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

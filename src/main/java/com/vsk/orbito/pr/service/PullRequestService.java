@@ -1,6 +1,9 @@
 package com.vsk.orbito.pr.service;
 
+import com.vsk.orbito.entity.User;
 import com.vsk.orbito.event.OrbitoEventPublisher;
+import com.vsk.orbito.event.PRCommentAddedEvent;
+import com.vsk.orbito.event.PRMergedEvent;
 import com.vsk.orbito.exception.ResourceNotFoundException;
 import com.vsk.orbito.pr.document.PRComment;
 import com.vsk.orbito.pr.dto.*;
@@ -166,16 +169,16 @@ public class PullRequestService {
 
         // 3. Kafka event will be published here in Week 5
         // eventPublisher.publishPRMergedEvent(saved);
-//        eventPublisher.publishPRMerged(PRMergedEvent.builder()
-//                .prId(saved.getId())
-//                .prTitle(saved.getTitle())
-//                .authorEmail(saved.getAuthor().getEmail())
-//                .authorName(saved.getAuthor().getName())
-//                .mergedByName(merger.getName())
-//                .projectName(saved.getProject().getName())
-//                .linkedTaskId(saved.getLinkedTask() != null
-//                        ? saved.getLinkedTask().getId() : null)
-//                .build());
+        eventPublisher.publishPRMerged(PRMergedEvent.builder()
+                .prId(saved.getId())
+                .prTitle(saved.getTitle())
+                .authorEmail(saved.getAuthor().getEmail())
+                .authorName(saved.getAuthor().getName())
+                .mergedByName(merger.getName())
+                .projectName(saved.getProject().getName())
+                .linkedTaskId(saved.getLinkedTask() != null
+                        ? saved.getLinkedTask().getId() : null)
+                .build());
 
         return toResponse(saved);
     }
@@ -237,14 +240,14 @@ public class PullRequestService {
 
         // get PR details for the event
         PullRequest pr = getPROrThrow(prId);
-//        eventPublisher.publishPRCommentAdded(PRCommentAddedEvent.builder()
-//                .prId(prId)
-//                .prTitle(pr.getTitle())
-//                .commentContent(request.getContent())
-//                .commenterName(author.getName())
-//                .prAuthorEmail(pr.getAuthor().getEmail())
-//                .prAuthorId(pr.getAuthor().getId())
-//                .build());
+        eventPublisher.publishPRCommentAdded(PRCommentAddedEvent.builder()
+                .prId(prId)
+                .prTitle(pr.getTitle())
+                .commentContent(request.getContent())
+                .commenterName(author.getName())
+                .prAuthorEmail(pr.getAuthor().getEmail())
+                .prAuthorId(pr.getAuthor().getId())
+                .build());
 
         log.info("Comment added to PR {} by {}", prId, authorEmail);
         return toCommentResponse(saved);

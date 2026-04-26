@@ -13,6 +13,8 @@ import com.vsk.orbito.task.enums.TaskStatus;
 import com.vsk.orbito.task.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -31,7 +33,10 @@ public class TaskService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
 
+    // bust the cache when a task is created
     @Transactional
+    @CacheEvict(value = "dashboardStats",
+            key = "'project-' + #request.projectId")
     public TaskResponse createTask(
             CreateTaskRequest request, String creatorEmail) {
 
@@ -67,7 +72,9 @@ public class TaskService {
         return toResponse(saved);
     }
 
+    // bust the cache when a task is updated
     @Transactional
+    @CacheEvict(value = "dashboardStats", allEntries = true)
     public TaskResponse updateTask(
             Long taskId, UpdateTaskRequest request, String userEmail) {
         try {
@@ -135,7 +142,9 @@ public class TaskService {
                         new ResourceNotFoundException("Task not found"));
     }
 
+    // bust the cache when a task is deleted
     @Transactional
+    @CacheEvict(value = "dashboardStats", allEntries = true)
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() ->
@@ -143,6 +152,9 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
+    // cache stats — only hits DB once per 5 minutes
+    @Cacheable(value = "dashboardStats",
+            key = "'project-' + #projectId")
     public Map<String, Long> getTaskStats(Long projectId) {
         return taskRepository.countByStatusForProject(projectId)
                 .stream()

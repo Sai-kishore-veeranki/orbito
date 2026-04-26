@@ -1,5 +1,6 @@
 package com.vsk.orbito.project.entity;
 
+import com.vsk.orbito.entity.User;
 import com.vsk.orbito.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.*;

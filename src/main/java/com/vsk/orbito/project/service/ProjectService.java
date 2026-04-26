@@ -10,6 +10,8 @@ import com.vsk.orbito.repository.UserRepository;
 import com.vsk.orbito.workspace.entity.Workspace;
 import com.vsk.orbito.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,8 @@ public class ProjectService {
     private final UserRepository userRepository;
 
     @Transactional
+    @CacheEvict(value = "projectList",
+            key = "'workspace-' + #request.workspaceId")
     public ProjectResponse createProject(
             CreateProjectRequest request, String maintainerEmail) {
 
@@ -47,6 +51,9 @@ public class ProjectService {
         return toResponse(saved);
     }
 
+
+    @Cacheable(value = "projectList",
+            key = "'workspace-' + #workspaceId")
     public List<ProjectResponse> getProjectsByWorkspace(Long workspaceId) {
         return projectRepository.findByWorkspaceId(workspaceId)
                 .stream()

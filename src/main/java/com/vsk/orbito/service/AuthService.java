@@ -3,6 +3,7 @@ package com.vsk.orbito.service;
 import com.vsk.orbito.dto.request.LoginRequest;
 import com.vsk.orbito.dto.request.RegisterRequest;
 import com.vsk.orbito.dto.response.AuthResponse;
+import com.vsk.orbito.entity.User;
 import com.vsk.orbito.exception.ResourceNotFoundException;
 import com.vsk.orbito.repository.UserRepository;
 import com.vsk.orbito.security.CustomUserDetailsService;
